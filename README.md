@@ -6,5 +6,5 @@ A melody generation project using neural networks.
 
 
 ```
-    pip install -r requirements.txt
+pip install -r requirements.txt
 ```
