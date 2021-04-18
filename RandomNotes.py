@@ -33,10 +33,10 @@ def GenerateRandomNotes(n):
 
 def main():
 
-    listMidis = GetMidiFiles("./MIDI_DATA/*.mid")
+    #listMidis = GetMidiFiles("./MIDI_DATA/*.mid")
 
-    midiFile = listMidis[0]
-    midiFile = "./MIDI_DATA/#Test.mid"
+    #midiFile = listMidis[0]
+    #midiFile = "./MIDI_DATA/#Test.mid"
 
     noteStrings = GenerateRandomNotes(20);
 
