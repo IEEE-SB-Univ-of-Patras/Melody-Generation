@@ -129,4 +129,5 @@ def main():
     StringToWav(s, "vagos")
 
         
-main()
+if __name__ == "__main__":
+    main()
