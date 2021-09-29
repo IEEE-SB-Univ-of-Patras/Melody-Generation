@@ -14,23 +14,43 @@ def SampleIndex(preds, temperature=1.0):
     probas = np.random.multinomial(1, preds, 1)
     return np.argmax(probas)
  
+maxlen = 9
 
-def TrainNetwork():
+networkWords = ['0', '1', '2', '3', '4', '5', '6', 
+            '7', '8', '9', ' ', 'a']
 
-    noteString = Processing.MidiFileToString("MIDIFILE")
+def CreateNetwork():
+
+   
+    notes = sorted(list(set( networkWords )))
+
+    model = keras.Sequential(
+    [
+        keras.Input(shape=(maxlen, len(notes))),
+        layers.LSTM(128),
+        layers.Dense(len(notes), activation="softmax"),
+    ]
+    )
+
+    optimizer = keras.optimizers.RMSprop(learning_rate=0.01)
+    model.compile(loss="categorical_crossentropy", optimizer=optimizer)
+
+    return model
 
 
-    notes = sorted(list(set( noteString )))
+
+def TrainNetwork(model, filename):
+
+    noteString = Processing.MidiFileToString(filename)
+
+    notes = sorted(list(set( networkWords )))
 
     print(notes)
-
-    print("Total chars: ", len(notes) )
 
     note_indices = dict((c, i) for i, c in enumerate(notes))
     indices_note = dict((i, c) for i, c in enumerate(notes))
 
     # cut the text in semi-redundant sequences of maxlen characters
-    maxlen = 1
     step = 1
     sentences = []
     next_chars = []
@@ -52,35 +72,24 @@ def TrainNetwork():
             x[i, t, note_indices[char]] = 1
        
         y[i, note_indices[next_chars[i]]] = 1
-    
-    model = keras.Sequential(
-    [
-        keras.Input(shape=(maxlen, len(notes))),
-        layers.LSTM(128),
-        layers.Dense(len(notes), activation="softmax"),
-    ]
-    )
-    optimizer = keras.optimizers.RMSprop(learning_rate=0.01)
-    model.compile(loss="categorical_crossentropy", optimizer=optimizer)
-
-
+ 
     epochs = 40
     batch_size = 128
     
     for epoch in range(epochs):
-        model.fit(x, y, batch_size=batch_size, epochs=1)
+        model.fit(x, y, batch_size=batch_size, epochs=1,verbose=0)
         print()
         print("Generating text after epoch: %d" % epoch)
 
-        start_index = random.randint(0, len(notes) - maxlen - 1)
-        for diversity in [0.2, 0.5, 1.0, 1.2]:
-            print("...Diversity:", diversity)
+        start_index = 0
+        for diversity in [0.5]:
+            print("Diversity:", diversity)
 
             generated = ""
             sentence = noteString[start_index : start_index + maxlen]
-            print('...Generating with seed: "' + sentence + '"')
+            print('Generating with seed: "' + sentence + '"')
 
-            for i in range(400):
+            for i in range(800):
                 x_pred = np.zeros((1, maxlen, len(notes)))
                 for t, char in enumerate(sentence):
                     x_pred[0, t, note_indices[char]] = 1.0
@@ -90,9 +99,18 @@ def TrainNetwork():
                 sentence = sentence[1:] + next_char
                 generated += next_char
 
-            generated = Processing.StringToNotes(generated)
+            Processing.StringToWav(generated, "RIP_Epoch_{}_Diversity_{}".format(epoch, diversity))
             
-            Processing.StringToWav(generated, "Epoch_{}".format(epoch))
-            
-            print("...Generated: ", generated)
+            print("Generated: ", generated)
 
+def main():
+
+    Network_DJ = CreateNetwork()
+
+    trainingInput = ["ex3.mid","ex4.mid","ex5.mid"]
+
+    for m in trainingInput:
+        TrainNetwork(Network_DJ, m)
+        
+if __name__ == "__main__":
+    main()
