@@ -3,7 +3,7 @@ from tensorflow.keras import layers
 import numpy as np
 import random
 
-import Processing
+import ProcessingJohny as Processing
 
 def SampleIndex(preds, temperature=1.0):
     # helper function to sample an index from a probability array
