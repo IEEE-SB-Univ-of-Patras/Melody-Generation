@@ -11,6 +11,10 @@ from scipy.io.wavfile import write
 #import random
 #import io
 import time
+
+
+OutputName = ""
+
 def myFunc(x):
     return int(x.split(",")[1])
 def StringToCSV(String):
@@ -116,11 +120,11 @@ def CsvToMidi(filename):
         midiWriter = py_midicsv.FileWriter(midiFile)
         midiWriter.write(midiObject)
 
-def MidiToWav(filename): # Finally synthesize the MIDI into a WAV sound file.
+def MidiToWav(filename, outputname): # Finally synthesize the MIDI into a WAV sound file.
 
     midiFormat = pretty_midi.PrettyMIDI(filename)
     audioData = midiFormat.synthesize(wave = np.sin)
-    write(filename + ".wav", 44100, audioData)
+    write(outputname + ".wav", 44100, audioData)
 
 
 
@@ -138,27 +142,16 @@ def MidiFileToString(filename):
     for line in csv_string2:
         if 1==1:
         
-
-
             if "Note_on_c" in line:
                 csv_string.append(line)
             if "Note_off_c" in line:
                 csv_string.append(line)
 
 
-    
-
-
     midi_length=csv_string[-1].split(",")
     midi_length=int(midi_length[1])
     csv_string.pop(-1)
     
-
-            
-            
-        
-            
-
     time_list=[]
     #initialize time list
     for i in range(0,midi_length):
@@ -202,16 +195,24 @@ def MidiFileToString(filename):
     return string
 
 def StringToWav(generated, filename):
+    
+    global OutputName
+
     result=StringToCSV(generated)
-    NotesToCsv(result,"Temp_{}.csv".format(filename))
-    CsvToMidi("Temp_{}.csv".format(filename))
+    NotesToCsv(result,"./Temp/{}.csv".format(filename))
+    CsvToMidi("./Temp/{}.csv".format(filename))
     try:
-        MidiToWav("Temp_{}.csv.mid".format(filename))
+        MidiToWav("./Temp/{}.csv.mid".format(filename), "./Final/" + OutputName)
     except:
-        print("couldn't make wav")
+        print("Couldn't make WAV")
+
+def SetOutputName(name):
+
+    global OutputName
+
+    OutputName = name
     
-    
-def main2():
+def main():
     s1=time.time()
     noteString = MidiFileToString("ioanna.mid")
     print("hi")
@@ -230,4 +231,4 @@ def main2():
 
 
 if __name__ == "__main__":
-    main2()
+    main()

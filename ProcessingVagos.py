@@ -107,18 +107,18 @@ def CsvToMidi(filename): # Turn the CSV file back into MIDI
         midiWriter = py_midicsv.FileWriter(midiFile)
         midiWriter.write(midiObject)
     
-def MidiToWav(filename): # Finally synthesize the MIDI into a WAV sound file.
+def MidiToWav(filename, outputname): # Finally synthesize the MIDI into a WAV sound file.
 
     midiFormat = pretty_midi.PrettyMIDI(filename)
     audioData = midiFormat.synthesize(wave = np.sin)
-    write(filename + ".wav", 44100, audioData)
+    write(outputname + ".wav", 44100, audioData)
 
 def StringToWav(s, name):
 
     l = StringToNotes(s)
     NotesToCsv(l, name + ".csv")
     CsvToMidi(name + ".csv")
-    MidiToWav(name + ".csv.mid")
+    MidiToWav(name + ".csv.mid", name)
 
 def main():
     

@@ -5,6 +5,7 @@ import random
 
 import ProcessingJohny as Processing
 
+
 def SampleIndex(preds, temperature=1.0):
     # helper function to sample an index from a probability array
     preds = np.asarray(preds).astype("float64")
@@ -99,7 +100,7 @@ def TrainNetwork(model, filename):
                 sentence = sentence[1:] + next_char
                 generated += next_char
 
-            Processing.StringToWav(generated, "RIP_Epoch_{}_Diversity_{}".format(epoch, diversity))
+            Processing.StringToWav(generated, "Epoch_{}_Diversity_{}".format(epoch, diversity))
             
             print("Generated: ", generated)
 

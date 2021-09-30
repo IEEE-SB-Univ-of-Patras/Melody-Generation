@@ -1,10 +1,12 @@
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import PhotoImage
+from tkinter import simpledialog
 from PIL import ImageTk, Image
 import threading
 
 import NeuralNet
+import Processing
 
 class MelodyGenerationApp():
 
@@ -20,6 +22,7 @@ class MelodyGenerationApp():
         self.font = "SourceCodePro"
 
         self.selectedMidis = []
+        self.outputName = ""
 
         self.drawLogo()
 
@@ -46,6 +49,9 @@ class MelodyGenerationApp():
 
     def placeButtons(self):
 
+        self.loadedLabel = tk.Label(font = self.font + " 10", bg = "#3db9bb", justify = "left")
+        self.loadedLabel.place(x=40, y=140)
+
         def loadMidis():
 
             filetypes = (
@@ -57,22 +63,26 @@ class MelodyGenerationApp():
 
             loadedString = "\n".join(["• {}".format(midi.split("/")[-1]) for midi in self.selectedMidis])
 
-            loadedLabel = tk.Label(text="MIDIs loaded: " + "\n" + loadedString, font = self.font + " 10", bg = "#3db9bb", justify = "left")
-            loadedLabel.place(x=40, y=140)
+            self.loadedLabel.config(text = "MIDIs loaded: \n" + loadedString)
 
         loadButton = tk.Button(text="Load MIDIs", font = self.font + " 10", 
                                command = lambda: loadMidis()) 
 
         trainButton = tk.Button(text="Create Music", font = self.font + " 10",
                                 command = lambda: self.startNeuralNetwork())
-        quitButton = tk.Button(text="Quit", font = self.font + " 10", fg = "red", command = self.root.destroy)
+        quitButton = tk.Button(text="Quit", font = self.font + " 10", fg = "red", 
+                               command = self.root.destroy)
 
-        loadButton.place(x=260, y= 380)
-        trainButton.place(x=60, y= 380)
-        quitButton.place(x=460, y=380)
+        loadButton.place(x=60, y= 380)
+        trainButton.place(x=200, y= 380)
+        quitButton.place(x=360, y=380)
 
     def startNeuralNetwork(self):
-        
+
+        outputName = simpledialog.askstring("Name", "Please enter a name for the output audio files.")
+
+        Processing.SetOutputName(outputName)
+
         Network_DJ = NeuralNet.CreateNetwork()
         
         def doTrain():
