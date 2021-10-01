@@ -6,7 +6,7 @@ from PIL import ImageTk, Image
 import threading
 
 import NeuralNet
-import Processing
+import ProcessingJohny as Processing
 
 class MelodyGenerationApp():
 

@@ -198,11 +198,13 @@ def StringToWav(generated, filename):
     
     global OutputName
 
-    result=StringToCSV(generated)
-    NotesToCsv(result,"./Temp/{}.csv".format(filename))
-    CsvToMidi("./Temp/{}.csv".format(filename))
+    fullName = OutputName + "_" + filename
+
+    result = StringToCSV(generated)
+    NotesToCsv(result,"./Temp/{}.csv".format(fullName))
+    CsvToMidi("./Temp/{}.csv".format(fullName))
     try:
-        MidiToWav("./Temp/{}.csv.mid".format(filename), "./Final/" + OutputName)
+        MidiToWav("./Temp/{}.csv.mid".format(filename), "./Final/" + fullName)
     except:
         print("Couldn't make WAV")
 

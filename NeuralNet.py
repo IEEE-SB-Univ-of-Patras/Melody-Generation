@@ -2,6 +2,7 @@ from tensorflow import keras
 from tensorflow.keras import layers
 import numpy as np
 import random
+import time
 
 import ProcessingJohny as Processing
 
@@ -100,7 +101,9 @@ def TrainNetwork(model, filename):
                 sentence = sentence[1:] + next_char
                 generated += next_char
 
-            Processing.StringToWav(generated, "Epoch_{}_Diversity_{}".format(epoch, diversity))
+            timeString = time.strftime("%Y-%b-%d__%H_%M_%S",time.localtime())
+
+            Processing.StringToWav(generated, "Epoch_{}_Diversity_{}_{}".format(epoch, diversity, timeString))
             
             print("Generated: ", generated)
 
